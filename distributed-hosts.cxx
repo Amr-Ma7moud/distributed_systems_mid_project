@@ -65,6 +65,36 @@ int main(int argc, char **argv) {
   cout << "Execution time: " << elapsed.count() << " seconds for rank: " << rank
        << endl;
 
+  // Gather final grid on rank 0
+  const int rowsPerRank = N / 2;
+  const int elementsPerRank = rowsPerRank * M;
+
+  // Each rank prepares only its owned rows
+  vector<double> localData(elementsPerRank);
+
+  int startRow = (rank == 0) ? 0 : 1;
+
+  for (int i = 0; i < rowsPerRank; ++i) {
+    for (int j = 0; j < M; ++j) {
+      localData[i * M + j] = heatMap[startRow + i][j];
+    }
+  }
+
+  // Rank 0 allocates space for the complete grid
+  vector<double> finalGrid;
+
+  if (rank == 0) {
+    finalGrid.resize(N * M);
+  }
+
+  // Collect data from all ranks
+  MPI_Gather(localData.data(), elementsPerRank, MPI_DOUBLE,
+             rank == 0 ? finalGrid.data() : nullptr, elementsPerRank,
+             MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+  if (!rank)
+    cout << finalGrid.size() << " from rank 0";
+
   MPI_Finalize();
   return 0;
 }
