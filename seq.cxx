@@ -32,8 +32,15 @@ vector<vector<double>> initializeGrid() {
 }
 
 int main() {
+  auto initializationStart = chrono::high_resolution_clock::now();
   vector<vector<double>> heatMap = initializeGrid();
   vector<vector<double>> tempHeatMap(N, vector<double>(M));
+  auto initializationEnd = chrono::high_resolution_clock::now();
+  chrono::duration<double> initializationElapsed =
+      initializationEnd - initializationStart;
+  cout << "initialization time: " << initializationElapsed.count()
+       << " seconds\n";
+
   double sum;
   auto start = chrono::high_resolution_clock::now();
   for (unsigned int k = 0; k < 2000; ++k) {
