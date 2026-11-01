@@ -1,3 +1,4 @@
+#include <chrono>
 #include <cstdint>
 #include <iostream>
 #include <vector>
@@ -34,6 +35,7 @@ int main() {
   vector<vector<double>> heatMap = initializeGrid();
   vector<vector<double>> tempHeatMap(N, vector<double>(M));
   double sum;
+  auto start = chrono::high_resolution_clock::now();
   for (unsigned int k = 0; k < 2000; ++k) {
     for (unsigned int i = 1; i < N - 1; ++i) {
       for (unsigned int j = 1; j < M - 1; ++j) {
@@ -45,5 +47,8 @@ int main() {
     }
     std::swap(heatMap, tempHeatMap);
   }
+  auto end = chrono::high_resolution_clock::now();
+  chrono::duration<double> elapsed = end - start;
+  cout << "Execution time: " << elapsed.count() << " seconds\n";
   return 0;
 }
