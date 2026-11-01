@@ -1,3 +1,4 @@
+#include <chrono>
 #include <cstdint>
 #include <iostream>
 #include <mpi.h>
@@ -45,6 +46,24 @@ int main(int argc, char **argv) {
       heatMap[N / 2][i] = 20.0;
     }
   }
+
+  double sum;
+  auto start = chrono::high_resolution_clock::now();
+  for (unsigned int k = 0; k < 2000; ++k) {
+    for (unsigned int i = 1; i < N / 2; ++i) {
+      for (unsigned int j = 1; j < M - 1; ++j) {
+        sum = heatMap[i - 1][j] + heatMap[i + 1][j] + heatMap[i][j - 1] +
+              heatMap[i][j + 1];
+        // used * 0.25 for free optimization
+        tempHeatMap[i][j] = sum * 0.25;
+      }
+    }
+    std::swap(heatMap, tempHeatMap);
+  }
+  auto end = chrono::high_resolution_clock::now();
+  chrono::duration<double> elapsed = end - start;
+  cout << "Execution time: " << elapsed.count() << " seconds for rank: " << rank
+       << endl;
 
   MPI_Finalize();
   return 0;
