@@ -33,13 +33,14 @@ vector<vector<double>> initializeGrid() {
 int main() {
   vector<vector<double>> heatMap = initializeGrid();
   vector<vector<double>> tempHeatMap(N, vector<double>(M));
-  int sum;
+  double sum;
   for (unsigned int k = 0; k < 2000; ++k) {
     for (unsigned int i = 1; i < N - 1; ++i) {
       for (unsigned int j = 1; j < M - 1; ++j) {
         sum = heatMap[i - 1][j] + heatMap[i + 1][j] + heatMap[i][j - 1] +
               heatMap[i][j + 1];
-        tempHeatMap[i][j] = sum / 4.0;
+        // used * 0.25 for free optimization
+        tempHeatMap[i][j] = sum * 0.25;
       }
     }
     std::swap(heatMap, tempHeatMap);
