@@ -1,12 +1,11 @@
 #include <cstdint>
 #include <iostream>
-#include <ostream>
 #include <vector>
 
 using namespace std;
 
-#define N 5
-#define M 5
+#define N 2000
+#define M 2000
 
 std::vector<std::vector<double>> grid(N, std::vector<double>(M, 0.0));
 
@@ -33,11 +32,5 @@ vector<vector<double>> initializeGrid() {
 
 int main() {
   vector<vector<double>> heatMap = initializeGrid();
-  for (auto row : heatMap) {
-    for (auto col : row) {
-      cout << col << " ";
-    }
-    cout << endl;
-  }
-  cout << "Hello Distributed Shit";
+  return 0;
 }
