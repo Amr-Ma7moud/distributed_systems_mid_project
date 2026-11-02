@@ -34,7 +34,7 @@ vector<vector<double>> initializeGrid() {
 int main() {
   auto initializationStart = chrono::high_resolution_clock::now();
   vector<vector<double>> heatMap = initializeGrid();
-  vector<vector<double>> tempHeatMap(N, vector<double>(M));
+  vector<vector<double>> tempHeatMap = heatMap;
   auto initializationEnd = chrono::high_resolution_clock::now();
   chrono::duration<double> initializationElapsed =
       initializationEnd - initializationStart;

@@ -24,17 +24,21 @@ int main(int argc, char **argv) {
   for (unsigned int i = 1; i < N / 2; ++i) {
     heatMap[i][0] = 20.0;
     heatMap[i][M - 1] = 20.0;
+    
+    tempHeatMap[i][0] = 20.0;
+    tempHeatMap[i][M - 1] = 20.0;
   }
 
   if (rank == 0) {
     for (unsigned int i = 0; i < M; ++i) {
       heatMap[0][i] = 100.0;
+      tempHeatMap[0][i] = 100.0;
     }
   }
 
   uint64_t h;
   for (unsigned int i = 1; i <= N / 2; ++i) {
-    for (unsigned int j = 1; j < M; ++j) {
+    for (unsigned int j = 1; j < M - 1; ++j) {
       h = ((uint64_t)(i + rank * 999) * 73856093ULL) ^
           ((uint64_t)(j) * 19349663ULL);
       heatMap[i][j] = 20.0 + (h % 1000) / 10.0;
@@ -44,6 +48,7 @@ int main(int argc, char **argv) {
   if (rank) {
     for (unsigned int i = 0; i < M; ++i) {
       heatMap[N / 2][i] = 20.0;
+      tempHeatMap[N / 2][i] = 20.0;
     }
   }
 
