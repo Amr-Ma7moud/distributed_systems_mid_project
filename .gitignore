@@ -1,0 +1,10 @@
+# Build outputs
+seq
+dh
+compare
+toy
+distributed
+*.exe
+
+# Grid dumps produced by --dump
+*.bin

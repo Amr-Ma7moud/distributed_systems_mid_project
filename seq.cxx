@@ -1,6 +1,9 @@
+#include "grid_io.h"
+
 #include <chrono>
 #include <cstdint>
 #include <iostream>
+#include <string>
 #include <vector>
 
 using namespace std;
@@ -31,7 +34,18 @@ vector<vector<double>> initializeGrid() {
   return grid;
 }
 
-int main() {
+int main(int argc, char **argv) {
+  string dumpPath;
+  for (int i = 1; i < argc; ++i) {
+    const string arg = argv[i];
+    if (arg == "--dump" && i + 1 < argc) {
+      dumpPath = argv[++i];
+    } else {
+      cerr << "usage: " << argv[0] << " [--dump <grid.bin>]\n";
+      return 2;
+    }
+  }
+
   auto initializationStart = chrono::high_resolution_clock::now();
   vector<vector<double>> heatMap = initializeGrid();
   vector<vector<double>> tempHeatMap = heatMap;
@@ -57,5 +71,14 @@ int main() {
   auto end = chrono::high_resolution_clock::now();
   chrono::duration<double> elapsed = end - start;
   cout << "Execution time: " << elapsed.count() << " seconds\n";
+
+  if (!dumpPath.empty()) {
+    if (!heat::writeGridRows(dumpPath, heatMap, N, M)) {
+      cerr << "failed to write final grid to " << dumpPath << "\n";
+      return 3;
+    }
+    cout << "Final grid written to " << dumpPath << "\n";
+  }
+
   return 0;
 }
