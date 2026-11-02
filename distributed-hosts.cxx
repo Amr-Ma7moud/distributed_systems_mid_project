@@ -55,6 +55,18 @@ int main(int argc, char **argv) {
   double sum;
   auto start = chrono::high_resolution_clock::now();
   for (unsigned int k = 0; k < 2000; ++k) {
+    if (rank == 0) {
+      // Send last owned row down to rank 1, receive rank 1's first owned row into ghost
+      MPI_Sendrecv(&heatMap[N / 2 - 1][0], M, MPI_DOUBLE, 1, 0,
+                   &heatMap[N / 2][0],     M, MPI_DOUBLE, 1, 1,
+                   MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    } else {
+      // Send first owned row up to rank 0, receive rank 0's last owned row into ghost
+      MPI_Sendrecv(&heatMap[1][0],  M, MPI_DOUBLE, 0, 1,
+                   &heatMap[0][0],  M, MPI_DOUBLE, 0, 0,
+                   MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    }
+
     for (unsigned int i = 1; i < N / 2; ++i) {
       for (unsigned int j = 1; j < M - 1; ++j) {
         sum = heatMap[i - 1][j] + heatMap[i + 1][j] + heatMap[i][j - 1] +
